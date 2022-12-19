@@ -1,0 +1,8 @@
+[{"_id": 25000, "label":"Reccord matchs gagnés (HOMME)", "valRecord": 50, "idJoueur":180},
+{"_id": 25001, "label":"Reccord matchs gagnés (FEMME)", "valRecord": 40, "idJoueur":337},
+ {"_id": 25002, "label":"Reccord Tournois Remportés (FEMME)", "valRecord": 18, "idJoueur":85},
+ {"_id": 25003, "label":"Reccord Tournois Remportés (HOMME)", "valRecord": 12, "idJoueur":786},
+ {"_id": 25004, "label": "Reccord raquettes cassées (HOMME)", "valRecord": 66, "idJoueur":428},
+ {"_id": 25005, "label": "Reccord raquettes cassées (FEMME)", "valRecord": 30, "idJoueur":460},
+ {"_id": 25006, "label":"Reccord matchs joués (FEMME)", "valRecord": 100, "idJoueur":887},
+ {"_id": 25007, "label":"Reccord matchs joués (HOMME)", "valRecord": 150, "idJoueur":1000}]

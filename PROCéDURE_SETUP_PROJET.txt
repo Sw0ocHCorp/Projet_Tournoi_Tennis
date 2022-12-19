@@ -1,0 +1,8 @@
+/!\ ATTENTION FONCTIONNE CORRECTEMENT AVEC VSCODE BIEN CONFIGURé
+-> Extension permettant la création de Projet Java téléchargée et Fonctionnelle
+
+CHARGEMENT DES DONNéES DANS LE SERVEUR MongoDB sur machine
+-> Run du Programme     App.java
+
+UTLISATION DE L'INTERFACE Graphique
+-> Run du Programme     Test_UI_UX.java

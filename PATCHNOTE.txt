@@ -1,0 +1,22 @@
+PROJET_TOURNOI_TENNIS_V0: 
+.Fonctionnalités présentes
+-> Interface Graphique permettant de communiquer avec la Base de Données MongoDB:
+    * Jointures entre tables: Joueurs -> Reccords_Historiques | Calendrier -> Joueurs
+    * GroupBy: Possibilité de compter les individus des collection en écrivant "count", "Count", "compter" ou "Compter" dans le champs de requètes" 
+    * Modification | Ajout | Suppression des individus des collections (Possibilité de faire ces mêmes actions sur plusieurs éléments en même temps)
+    * Tri des éléments selon les différents critères
+
+.Fonctionnalités à Développer
+-> Intégration d'une IA de génération d'image pour les collections Joueurs / Arbitres et Staff via Package DJL(si Possible)
+
+
+-----------------------------------------------------------------------------------
+PROJET_TOURNOI_TENNIS_V??
+.Fonctionnalités présentes
+->
+
+.Fonctionnalités à Développer
+->
+
+
+-----------------------------------------------------------------------------------
