@@ -11,12 +11,16 @@ PROJET_TOURNOI_TENNIS_V0:
 
 
 -----------------------------------------------------------------------------------
-PROJET_TOURNOI_TENNIS_V??
-.Fonctionnalités présentes
-->
+PROJET_TOURNOI_TENNIS_V1
+.Fonctionnalités Ajoutées
+-> Mode Fantasy League: Parie & Simulation du Tournoi de Tennis
+    * Parie & Simulation du Tournoi de Tennis
+    * Simulation du match finale via jeux Pong (Injouable / Le jeux Pong se déroule tout seul) 
 
 .Fonctionnalités à Développer
-->
+-> Intégration d'une IA de génération d'image pour les collections Joueurs / Arbitres et Staff via Package DJL
+        (Possible si une solution est trouvée au problème de rapidité de récupération des images générées par l'IA)
+-> Complexification des requêtes du GroupBy
 
 
 -----------------------------------------------------------------------------------

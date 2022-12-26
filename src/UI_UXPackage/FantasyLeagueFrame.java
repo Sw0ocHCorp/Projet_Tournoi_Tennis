@@ -198,6 +198,266 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
     public CRUDManager getCRUDManager() {
         return crudManager;
     }
+    public void processFL() {
+        Random rand= new Random();
+        ArrayList<Integer> idList= new ArrayList<>();
+        int compteurUpdateDoc= 0;
+        int prevId= 0;
+        int nbPlayer= 0;
+        int firstPreFinalPhase= 20100, firstGeneralPhase= 20100;
+        int firstFinalPhase= 20132;
+        int firstEigthPhase= 20148;
+        int firstQuarterPhase= 20156;
+        int firstSemiPhase= 20160;
+        int Final= 20162;
+        while (isFLFinished == false) {
+            System.out.println("isBetValidated: "+ isBetValidated);      
+            if (isBetValidated == true) {
+                /*try {
+                    TimeUnit.SECONDS.sleep(5);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }*/
+                //Pre-Final OK
+                for (int i = 0; i < 96; i++) {
+                    compteurUpdateDoc++;;
+                    int idFinalist= 10001 + rand.nextInt(961);
+                    while (prevId == idFinalist) {
+                        idFinalist= 10001 + rand.nextInt(961);
+                        
+                    }
+                    prevId= idFinalist;
+                    idList.add(idFinalist);
+                    nbPlayer++;
+                    System.out.println("nbPlayer: "+ nbPlayer);
+                    Document player= crudManager.searchOneElement("Joueurs_FL", new Document("_id", idFinalist));
+                    if (player != null) {
+                        crudManager.updateDocument("Joueurs_FL", new Document("_id", idFinalist), new Document("tournament_phase", "Pre-final"));    
+                        if (compteurUpdateDoc >= 3) {
+                            crudManager.updateDocument("Calendrier_Phases_Finales", new Document("_id", firstGeneralPhase), new Document("Joueurs", Arrays.asList(new Document("id_joueur", idList.get(0)), new Document("id_joueur", idList.get(1)), new Document("id_joueur", idList.get(2)))));
+                            idList.removeAll(idList);
+                            firstGeneralPhase++;
+                            compteurUpdateDoc= 0;
+                        }
+                    }
+                }
+                /*try {
+                    TimeUnit.SECONDS.sleep(5);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }*/
+                //16th-Final OK
+                for (int i = 0; i < 16; i++) {
+                    Document player1Event= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", firstPreFinalPhase));
+                    int idJ1= rand.nextInt(3);
+                    int idJ2= rand.nextInt(3);
+                    for (Document playerDoc : (ArrayList<Document>)player1Event.get("Joueurs")) {
+                        if (compteurUpdateDoc == idJ1) {
+                            idList.add((Integer) playerDoc.get("id_joueur"));
+                        }
+                        compteurUpdateDoc++;
+                    }
+                    compteurUpdateDoc= 0;
+                    firstPreFinalPhase++;
+                    Document player2Event= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", firstPreFinalPhase));
+                    for (Document playerDoc : (ArrayList<Document>)player2Event.get("Joueurs")) {
+                        if (compteurUpdateDoc == idJ2) {
+                            idList.add((Integer) playerDoc.get("id_joueur"));
+                        }
+                        compteurUpdateDoc++;
+                    }
+                    compteurUpdateDoc= 0;
+                    crudManager.updateDocument("Calendrier_Phases_Finales", new Document("_id", firstFinalPhase), new Document("Joueurs", Arrays.asList(new Document("id_joueur", idList.get(0)), new Document("id_joueur", idList.get(1)))));
+                    for (Integer idFinalist : idList) {
+                        Document player= crudManager.searchOneElement("Joueurs_FL", new Document("_id", idFinalist));
+                        if (player != null) {
+                            crudManager.updateDocument("Joueurs_FL", new Document("_id", idFinalist), new Document("tournament_phase", "16th-final"));    
+                        }
+                    }
+                    idList.removeAll(idList);
+                    firstFinalPhase++;
+                    firstPreFinalPhase++;
+                    
+                }
+                //8th-Final OK
+                firstFinalPhase= 20132;
+                for (int i = 0; i < 8; i++) {
+                    Document player1Event= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", firstFinalPhase));
+                    int idJ1= rand.nextInt(2);
+                    int idJ2= rand.nextInt(2);
+                    for (Document playerDoc : (ArrayList<Document>)player1Event.get("Joueurs")) {
+                        if (compteurUpdateDoc == idJ1) {
+                            idList.add((Integer) playerDoc.get("id_joueur"));
+                        }
+                        compteurUpdateDoc++;
+                    }
+                    compteurUpdateDoc= 0;
+                    firstFinalPhase++;
+                    Document player2Event= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", firstFinalPhase));
+                    for (Document playerDoc : (ArrayList<Document>)player2Event.get("Joueurs")) {
+                        if (compteurUpdateDoc == idJ2) {
+                            idList.add((Integer) playerDoc.get("id_joueur"));
+                        }
+                        compteurUpdateDoc++;
+                    }
+                    compteurUpdateDoc= 0;
+                    crudManager.updateDocument("Calendrier_Phases_Finales", new Document("_id", firstEigthPhase), new Document("Joueurs", Arrays.asList(new Document("id_joueur", idList.get(0)), new Document("id_joueur", idList.get(1)))));
+                    for (Integer idFinalist : idList) {
+                        Document player= crudManager.searchOneElement("Joueurs_FL", new Document("_id", idFinalist));
+                        if (player != null) {
+                            crudManager.updateDocument("Joueurs_FL", new Document("_id", idFinalist), new Document("tournament_phase", "8th-final"));    
+                        }
+                    }
+                    idList.removeAll(idList);
+                    firstEigthPhase++;
+                    firstFinalPhase++;
+                    
+                }
+                //Quarter-Final OK
+                firstEigthPhase= 20148;
+                for (int i = 0; i < 4; i++) {
+                    Document player1Event= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", firstEigthPhase));
+                    int idJ1= rand.nextInt(2);
+                    int idJ2= rand.nextInt(2);
+                    for (Document playerDoc : (ArrayList<Document>)player1Event.get("Joueurs")) {
+                        if (compteurUpdateDoc == idJ1) {
+                            idList.add((Integer) playerDoc.get("id_joueur"));
+                        }
+                        compteurUpdateDoc++;
+                    }
+                    compteurUpdateDoc= 0;
+                    firstEigthPhase++;
+                    Document player2Event= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", firstEigthPhase));
+                    for (Document playerDoc : (ArrayList<Document>)player2Event.get("Joueurs")) {
+                        if (compteurUpdateDoc == idJ2) {
+                            idList.add((Integer) playerDoc.get("id_joueur"));
+                        }
+                        compteurUpdateDoc++;
+                    }
+                    compteurUpdateDoc= 0;
+                    crudManager.updateDocument("Calendrier_Phases_Finales", new Document("_id", firstQuarterPhase), new Document("Joueurs", Arrays.asList(new Document("id_joueur", idList.get(0)), new Document("id_joueur", idList.get(1)))));
+                    for (Integer idFinalist : idList) {
+                        Document player= crudManager.searchOneElement("Joueurs_FL", new Document("_id", idFinalist));
+                        if (player != null) {
+                            crudManager.updateDocument("Joueurs_FL", new Document("_id", idFinalist), new Document("tournament_phase", "Quarter-final"));    
+                        }
+                    }
+                    idList.removeAll(idList);
+                    firstEigthPhase++;
+                    firstQuarterPhase++;
+                    
+                }
+                //Semi-Final OK
+                firstQuarterPhase= 20156;
+                for (int i = 0; i < 2; i++) {
+                    Document player1Event= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", firstQuarterPhase));
+                    int idJ1= rand.nextInt(2);
+                    int idJ2= rand.nextInt(2);
+                    for (Document playerDoc : (ArrayList<Document>)player1Event.get("Joueurs")) {
+                        if (compteurUpdateDoc == idJ1) {
+                            idList.add((Integer) playerDoc.get("id_joueur"));
+                        }
+                        compteurUpdateDoc++;
+                    }
+                    compteurUpdateDoc= 0;
+                    firstQuarterPhase++;
+                    Document player2Event= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", firstQuarterPhase));
+                    for (Document playerDoc : (ArrayList<Document>)player2Event.get("Joueurs")) {
+                        if (compteurUpdateDoc == idJ2) {
+                            idList.add((Integer) playerDoc.get("id_joueur"));
+                        }
+                        compteurUpdateDoc++;
+                    }
+                    compteurUpdateDoc= 0;
+                    crudManager.updateDocument("Calendrier_Phases_Finales", new Document("_id", firstSemiPhase), new Document("Joueurs", Arrays.asList(new Document("id_joueur", idList.get(0)), new Document("id_joueur", idList.get(1)))));
+                    for (Integer idFinalist : idList) {
+                        Document player= crudManager.searchOneElement("Joueurs_FL", new Document("_id", idFinalist));
+                        if (player != null) {
+                            crudManager.updateDocument("Joueurs_FL", new Document("_id", idFinalist), new Document("tournament_phase", "Semi-final"));    
+                        }
+                    }
+                    idList.removeAll(idList);
+                    firstSemiPhase++;
+                    firstQuarterPhase++;
+                    
+                }
+                //Final OK
+                firstSemiPhase= 20160;
+                Document player1Event= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", firstSemiPhase));
+                int idJ1= rand.nextInt(2);
+                int idJ2= rand.nextInt(2);
+                for (Document playerDoc : (ArrayList<Document>)player1Event.get("Joueurs")) {
+                    if (compteurUpdateDoc == idJ1) {
+                        idList.add((Integer) playerDoc.get("id_joueur"));
+                    }
+                    compteurUpdateDoc++;
+                }
+                compteurUpdateDoc= 0;
+                firstSemiPhase++;
+                Document player2Event= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", firstSemiPhase));
+                for (Document playerDoc : (ArrayList<Document>)player2Event.get("Joueurs")) {
+                    if (compteurUpdateDoc == idJ2) {
+                        idList.add((Integer) playerDoc.get("id_joueur"));
+                    }
+                    compteurUpdateDoc++;
+                }
+                compteurUpdateDoc= 0;
+                crudManager.updateDocument("Calendrier_Phases_Finales", new Document("_id", Final), new Document("Joueurs", Arrays.asList(new Document("id_joueur", idList.get(0)), new Document("id_joueur", idList.get(1)))));
+                for (Integer idFinalist : idList) {
+                    Document player= crudManager.searchOneElement("Joueurs_FL", new Document("_id", idFinalist));
+                    if (player != null) {
+                        crudManager.updateDocument("Joueurs_FL", new Document("_id", idFinalist), new Document("tournament_phase", "Final"));    
+                    }
+                }
+                idList.removeAll(idList);
+                    
+                //Winner OK
+                Document finalEvent= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", Final));    
+                int player1Index= rand.nextInt(2);
+                int player1Id= 0, player2Id= 0;
+                for (Document playerDoc : (ArrayList<Document>)finalEvent.get("Joueurs")) {
+                    if (compteurUpdateDoc == player1Index) {
+                        player1Id= (Integer) playerDoc.get("id_joueur");
+                    } else {
+                        player2Id= (Integer) playerDoc.get("id_joueur");
+                    }
+                    compteurUpdateDoc++;
+                }
+                compteurUpdateDoc= 0;
+                while (isPongStarted == false) {
+                    winnerLabel.setText("Appuyer sur Start Pong pour simuler la finale");
+                }
+                Thread pongThread= new Thread() {
+                    public void run() {
+                        playPong();
+                    }
+                };
+                pongThread.start();
+                try {
+                    pongThread.join();
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                System.out.println("Finale Terminée");
+                int winnerId= 0;
+                if (env.getScoreJ1() >= 3.0) {
+                    winnerId= player1Id;
+                } else if (env.getScoreJ2() >= 3.0){
+                    winnerId= player2Id;
+                }
+                Document player= crudManager.searchOneElement("Joueurs_FL", new Document("_id", winnerId));
+                if (player != null) {
+                    crudManager.updateDocument("Joueurs_FL", new Document("_id", winnerId), new Document("tournament_phase", "Winner"));    
+                    winnerLabel.setText("Le joueur présenti pour remporter le Tournoi est: " + (String)player.get("last_name") + " " + (String)player.get("first_name"));
+                }
+                isFLFinished= true;
+                
+            }
+        }
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -242,7 +502,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
         FantasyLeagueFrame frameTest= new FantasyLeagueFrame();
         new Thread() {
             public void run() {
-                processFL(frameTest);
+                frameTest.processFL(frameTest);
             }
         }.start();
     }

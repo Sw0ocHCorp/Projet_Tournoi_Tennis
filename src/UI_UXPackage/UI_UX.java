@@ -72,6 +72,7 @@ public class UI_UX extends JFrame implements ActionListener, ItemListener, ListS
     ));
     private ArrayList<Document> targetElementBuffer= new ArrayList<>();
     CRUDManager crudManager= new CRUDManager("Tournoi_Tennis");
+    FantasyLeagueFrame frameTest;
     private Document searchQuery, whereQuery, addQuery, rmQuery, groupQuery, sortQuery, filterQuery;
     public UI_UX() {
         super();
@@ -410,6 +411,14 @@ public class UI_UX extends JFrame implements ActionListener, ItemListener, ListS
         // TODO Auto-generated method stub
 
         Object targetObject= e.getSource();
+        if (targetObject == fLButton) {
+            frameTest= new FantasyLeagueFrame();
+            new Thread() {
+                public void run() {
+                    frameTest.processFL(frameTest);
+                }
+            }.start();
+        }
         if (targetObject == addButton) {
             //testLabel.setText(textField.getText());
             ArrayList<String> activeColList= refCollectionTable.getUICol();

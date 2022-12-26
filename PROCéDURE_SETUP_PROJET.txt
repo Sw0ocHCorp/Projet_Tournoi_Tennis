@@ -6,3 +6,15 @@ CHARGEMENT DES DONNéES DANS LE SERVEUR MongoDB sur machine
 
 UTLISATION DE L'INTERFACE Graphique
 -> Run du Programme     Test_UI_UX.java
+
+UTLISATION DU MODE FANTASY League
+        -> Run du Programme     Test_UI_UX.java
+        -> Appui sur le Bouton  "Jouer au mode Fantasy League"
+    * Lancer la Simulation du Tournoi 
+        -> Appui sur le Bouton "Parier sur un Joueur"
+        -> Sélection d'un Joueur dans la Table des Joueurs
+        -> Appui sur le Bouton "Valider le Parie"
+    * Simuler la Finale pour connaître le Joueur Winner du Tournoi
+        -> Appui sur le Bouton "Play Pong"
+        -> Attendre que le Match soit terminé, Le nom du gagnant s'affiche dans la Table des Joueurs 
+            mais aussi sur le Label sous les boutons de la Fenêtre de Base du Mode Fantasy League

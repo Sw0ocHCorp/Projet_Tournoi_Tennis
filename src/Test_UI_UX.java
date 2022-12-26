@@ -1,5 +1,7 @@
-package UI_UXPackage;
+
 import javax.swing.SwingUtilities;
+
+import UI_UXPackage.UI_UX;
 
 public class Test_UI_UX {
     public static void main(String[] args) {
