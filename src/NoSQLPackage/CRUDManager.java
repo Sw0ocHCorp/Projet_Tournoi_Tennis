@@ -1,5 +1,6 @@
 package NoSQLPackage;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -238,9 +239,10 @@ public class CRUDManager {
             matchQuery,
             addQuery, 
             rmQuery));
-        for (Document document : outputCollection) {
+            
+        /*for (Document document : outputCollection) {
             System.out.println(document.toJson(settings));
-        }
+        }*/
     }
 
     // Fait tout Bugger || Impossible d'afficher les Documents
@@ -284,6 +286,16 @@ public class CRUDManager {
 				e.printStackTrace();
 			}
 
+    }
+
+    public void exportDataToJSON(String filePath, String colName) {
+        String command = "C:\\Program Files\\MongoDB\\Server\\5.0\\bin\\mongoexport.exe --db " + mainDB.getName() + " --collection " + colName + " --out " + filePath;
+        try {
+            Process process= Runtime.getRuntime().exec(command);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     //------------------------------------------------------------------------------------
@@ -335,6 +347,9 @@ public class CRUDManager {
             for (String key: keyList) {
                 if (document.get(key) instanceof Integer) {
                     valueList.add(document.get(key).toString());
+                
+                } else if (document.get(key) instanceof Boolean) {
+                    valueList.add(((Boolean)document.get(key)).toString());
                 } else if (document.get(key) instanceof ArrayList) {
                     ArrayList<Document> subDocList= (ArrayList<Document>) document.get(key);
                     for (Document d: subDocList) {

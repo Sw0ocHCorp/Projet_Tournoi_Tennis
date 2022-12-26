@@ -1,4 +1,7 @@
 package UI_UXPackage;
+import javax.swing.*;
+import java.awt.*;
+
 import java.awt.CardLayout;
 import java.awt.Component;
 
@@ -48,7 +51,7 @@ public class UI_UX extends JFrame implements ActionListener, ItemListener, ListS
     private Dimension dimension = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
     private Clock timerClock= Clock.systemDefaultZone();
     private JPanel panel, manageColPanel, textItemPanel, advFunctionPanel, advButtonPanel, keyFJPanel, refColPanel;
-    private JButton addButton, removeButton, updateButton, joinButton, groupbyButton, vButton, cancelButton, searchButton;
+    private JButton addButton, removeButton, updateButton, joinButton, groupbyButton, vButton, cancelButton, searchButton, fLButton;
     private JLabel testLabel, fColLab, lColLab, keyLabel;
     private JTextField textField, gbRequestTextField, searchTextField;
     private JTextArea gbResultTextArea;
@@ -65,7 +68,7 @@ public class UI_UX extends JFrame implements ActionListener, ItemListener, ListS
     private int targetIndex;
     private int functionMode= 1;
     private List<Object> collectionsNames= new ArrayList<>(Arrays.asList(
-        "Arbitres", "Calendrier", "Records_Historiques", "Joueurs", "Staff", "Visiteurs"
+        "Arbitres", "Calendrier_Phases_Groupes", "Calendrier_Phases_Finales", "Records_Historiques", "Joueurs", "Staff", "Visiteurs"
     ));
     private ArrayList<Document> targetElementBuffer= new ArrayList<>();
     CRUDManager crudManager= new CRUDManager("Tournoi_Tennis");
@@ -120,6 +123,8 @@ public class UI_UX extends JFrame implements ActionListener, ItemListener, ListS
         vButton.addActionListener(this);
         cancelButton= new JButton("Retour");
         cancelButton.addActionListener(this);
+        fLButton= new JButton("Jouer au mode Fantasy League");
+        fLButton.addActionListener(this);
         advButtonPanel.setLayout(new BoxLayout(advButtonPanel, BoxLayout.X_AXIS));
         advButtonPanel.add(joinButton);
         advButtonPanel.add(groupbyButton);
@@ -127,6 +132,9 @@ public class UI_UX extends JFrame implements ActionListener, ItemListener, ListS
         advButtonPanel.add(vButton);
         advButtonPanel.add(cancelButton);
         advFunctionPanel.add(advButtonPanel);
+        /*fLButton.setMinimumSize(new Dimension(200, 25));
+        fLButton.setPreferredSize(new Dimension(200, 25));*/
+        manageColPanel.add(fLButton);
         manageColPanel.add(advFunctionPanel);
 
         comboBox= new JComboBox(collectionsNames.toArray());
@@ -200,7 +208,7 @@ public class UI_UX extends JFrame implements ActionListener, ItemListener, ListS
                                                     whereQuery,
                                                     "_id", "idJoueur", crudManager, null, filterCheckBox.isSelected());
             tableFrame= new JTable(joinColTable);
-        } else if (fColName.equals("Calendrier") && lColName.equals("Joueurs")){
+        } else if (fColName.equals("Calendrier_Phases_Groupes") && lColName.equals("Joueurs")){
             complexColTable= new ComplexCollectionTable(fColName, lColName,
                                                     whereQuery,
                                                     "Joueurs.id_joueur", "_id", crudManager, null, filterCheckBox.isSelected());
@@ -545,12 +553,10 @@ public class UI_UX extends JFrame implements ActionListener, ItemListener, ListS
         // TODO Auto-generated method stub
         int[] rowSelected;
         int index= 0;
-        
         rowSelected= tableFrame.getSelectedRows();
         if (rowSelected.length > 0) {
-            TableModel tableModel= tableFrame.getModel();
             for (int i : rowSelected) {
-                int val= Integer.valueOf((String) tableModel.getValueAt(rowSelected[rowSelected.length-1], 0));
+                int val= Integer.valueOf((String) tableFrame.getValueAt(rowSelected[rowSelected.length-1], 0));
                 Document targetDocument= new Document("_id", val);
                 if (!targetElementBuffer.contains((Document) targetDocument)) {
                     targetElementBuffer.add(targetDocument);
@@ -561,7 +567,7 @@ public class UI_UX extends JFrame implements ActionListener, ItemListener, ListS
                 if (component instanceof JTextField) {
                     JTextField targetTextField= (JTextField) component;
                     targetTextField.setText("");
-                    String strValue= (String) tableModel.getValueAt(rowSelected[rowSelected.length-1], index);
+                    String strValue= (String) tableFrame.getValueAt(rowSelected[rowSelected.length-1], index);
                     if (strValue.contains("<html>")) {
                         strValue= strValue.replace("<html>", "");
                         strValue= strValue.replace("<br>", "||");

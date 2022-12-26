@@ -34,7 +34,13 @@ public class CollectionTable extends AbstractTableModel{
             } else {
                 activeColumns= crudManager.getUIKeys(colName);
             }
-        } if (colName == "Calendrier") {
+        } if (colName == "Calendrier_Phases_Groupes") {
+            if (crudManager.getUIKeys(colName).isEmpty()) {
+                //activeColumns= refBaseColumns;
+            } else {
+                activeColumns= crudManager.getUIKeys(colName);
+            }
+        } if (colName == "Calendrier_Phases_Finales") {
             if (crudManager.getUIKeys(colName).isEmpty()) {
                 //activeColumns= refBaseColumns;
             } else {
@@ -47,6 +53,12 @@ public class CollectionTable extends AbstractTableModel{
                 activeColumns= crudManager.getUIKeys(colName);
             }
         } if (colName == "Joueurs") {
+            if (crudManager.getUIKeys(colName).isEmpty()) {
+                activeColumns= playerBaseColumns;
+            } else {
+                activeColumns= crudManager.getUIKeys(colName);
+            }
+        } if (colName == "Joueurs_FL") {
             if (crudManager.getUIKeys(colName).isEmpty()) {
                 activeColumns= playerBaseColumns;
             } else {
