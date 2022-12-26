@@ -106,7 +106,6 @@ public class PongEngine extends JComponent {
 
                 } else {
                     setScore("J1");
-                    System.out.println("J1 Scored= " + scoreJ1);
                 }
             }
         } else if (ballDirection == "toJ1") {
@@ -119,7 +118,6 @@ public class PongEngine extends JComponent {
 
                 } else {
                     setScore("J2");
-                    System.out.println("J2 Scored= " + scoreJ2);
                 }
             }
         }
@@ -161,7 +159,7 @@ public class PongEngine extends JComponent {
     }
 
     public void playGame() {
-        while (scoreJ1 < 5.0 || scoreJ2 < 5.0) {
+        while (scoreJ1 < 3.0 && scoreJ2 < 3.0) {
             verifyScore();
             this.repaint();
             try {
@@ -174,8 +172,18 @@ public class PongEngine extends JComponent {
             //Player Reaction
             playerReaction();
             this.repaint();
+            System.out.println("J1 Scored= " + scoreJ1);
+            System.out.println("J2 Scored= " + scoreJ2);
+            System.out.println("----------------------");
         }
-        
+
+    }
+
+    public double getScoreJ1() {
+        return scoreJ1;
+    }
+    public double getScoreJ2() {
+        return scoreJ2;
     }
 
     public static void main(String[] args) {

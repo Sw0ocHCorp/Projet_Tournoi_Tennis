@@ -55,6 +55,8 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
     CRUDManager crudManager;
     boolean isFLFinished= false;
     boolean isBetValidated= false;
+    boolean isPongStarted= false;
+    boolean isPongFinished= false;
     public FantasyLeagueFrame() {
         super("Fantasy League");
         try {
@@ -145,6 +147,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
 
     public void playPong() {
         this.env.playGame();
+        isPongFinished= true;
     }
 
     private void updateRowHeights(JTable table){
@@ -209,11 +212,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
             groupButton.setEnabled(false);
             finalButton.setEnabled(true);
         } else if (buttonPressed == startPongButton) {
-            new Thread() {
-                public void run() {
-                    playPong();
-                }
-            }.start();
+            isPongStarted= true;
         } else if (buttonPressed == betButton) {
             updateColGUI("Joueurs_FL", betPanel);
             betFrame.setVisible(true);
@@ -466,15 +465,39 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                     
                 //Winner OK
                 Document finalEvent= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", Final));    
-                int winnerIndex= rand.nextInt(2);
-                int winnerId= 0;
+                int player1Index= rand.nextInt(2);
+                int player1Id= 0, player2Id= 0;
                 for (Document playerDoc : (ArrayList<Document>)finalEvent.get("Joueurs")) {
-                    if (compteurUpdateDoc == winnerIndex) {
-                       winnerId= (Integer) playerDoc.get("id_joueur");
+                    if (compteurUpdateDoc == player1Index) {
+                        player1Id= (Integer) playerDoc.get("id_joueur");
+                    } else {
+                        player2Id= (Integer) playerDoc.get("id_joueur");
                     }
                     compteurUpdateDoc++;
                 }
                 compteurUpdateDoc= 0;
+                while (frameTest.isPongStarted == false) {
+                    frameTest.winnerLabel.setText("Appuyer sur Start Pong pour simuler la finale");
+                }
+                Thread pongThread= new Thread() {
+                    public void run() {
+                        frameTest.playPong();
+                    }
+                };
+                pongThread.start();
+                try {
+                    pongThread.join();
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                System.out.println("Finale Terminée");
+                int winnerId= 0;
+                if (frameTest.env.getScoreJ1() >= 3.0) {
+                    winnerId= player1Id;
+                } else if (frameTest.env.getScoreJ2() >= 3.0){
+                    winnerId= player2Id;
+                }
                 Document player= crudManager.searchOneElement("Joueurs_FL", new Document("_id", winnerId));
                 if (player != null) {
                     crudManager.updateDocument("Joueurs_FL", new Document("_id", winnerId), new Document("tournament_phase", "Winner"));    
