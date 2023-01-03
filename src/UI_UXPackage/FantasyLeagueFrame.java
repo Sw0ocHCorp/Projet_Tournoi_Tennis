@@ -40,6 +40,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
+// --> CLASSE: Fenêtre de gestion de l'application Fantasy League
 public class FantasyLeagueFrame extends JFrame implements ActionListener{
     Image img;
     int bgWidth= 500, bgHeight= 500;
@@ -57,6 +58,8 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
     boolean isBetValidated= false;
     boolean isPongStarted= false;
     boolean isPongFinished= false;
+
+    // --> Constructeur permettant d'initaliser la fenêtre du mode Fantasy League
     public FantasyLeagueFrame() {
         super("Fantasy League");
         try {
@@ -101,8 +104,6 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
         jspScheduleTable= new JScrollPane(tableFL, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, 
                                             ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         winnerLabel= new JLabel("");
-        //betPanel.add(jspBetTable);
-        //betPanel.add(validBetButton);
         pongPanel.add(env);
         pongPanel.add(startPongButton);
         schedulePanel.add(groupButton);
@@ -144,12 +145,12 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
 
         this.setVisible(true);
     }
-
+    // --> Méthode permettant de lancer la partie de Pong
     public void playPong() {
         this.env.playGame();
         isPongFinished= true;
     }
-
+    // --> Méthode permettant de mettre à jour la hauteur des lignes de la Table
     private void updateRowHeights(JTable table){
         for (int row = 0; row < table.getRowCount(); row++){
             int rowHeight = table.getRowHeight();
@@ -162,7 +163,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
             table.setRowHeight(rowHeight);
         }
     }
-
+    // --> Méthode permettant de MAJ le contenu de la table en fonction de la collection sélectionnée
     public void updateColGUI(String colName, JPanel panel) {
         int indexWidget= -1;
         int targetIndex= 0;
@@ -194,10 +195,11 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
         }
         panel.revalidate();
     }
-
+    // --> Méthode permettant de récupérer le CRUDManager (Pour la fonction main)
     public CRUDManager getCRUDManager() {
         return crudManager;
     }
+    // --> Méthode permettant de lancer les prédictions et la simulation de la phase finale
     public void processFL() {
         Random rand= new Random();
         ArrayList<Integer> idList= new ArrayList<>();
@@ -213,18 +215,12 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
         while (isFLFinished == false) {
             System.out.println("isBetValidated: "+ isBetValidated);      
             if (isBetValidated == true) {
-                /*try {
-                    TimeUnit.SECONDS.sleep(5);
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }*/
-                //Pre-Final OK
+                // Prédiction des joueurs participants à la phase de Pre-Final -> Gagnants de la phase de groupe
                 for (int i = 0; i < 96; i++) {
                     compteurUpdateDoc++;;
-                    int idFinalist= 10001 + rand.nextInt(961);
+                    int idFinalist= 11001 + rand.nextInt(961);
                     while (prevId == idFinalist) {
-                        idFinalist= 10001 + rand.nextInt(961);
+                        idFinalist= 11001 + rand.nextInt(961);
                         
                     }
                     prevId= idFinalist;
@@ -235,22 +231,16 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                     if (player != null) {
                         crudManager.updateDocument("Joueurs_FL", new Document("_id", idFinalist), new Document("tournament_phase", "Pre-final"));    
                         if (compteurUpdateDoc >= 3) {
-                            crudManager.updateDocument("Calendrier_Phases_Finales", new Document("_id", firstGeneralPhase), new Document("Joueurs", Arrays.asList(new Document("id_joueur", idList.get(0)), new Document("id_joueur", idList.get(1)), new Document("id_joueur", idList.get(2)))));
+                            crudManager.updateDocument("Calendrier_Phases_Finales_FL", new Document("_id", firstGeneralPhase), new Document("Joueurs", Arrays.asList(new Document("id_joueur", idList.get(0)), new Document("id_joueur", idList.get(1)), new Document("id_joueur", idList.get(2)))));
                             idList.removeAll(idList);
                             firstGeneralPhase++;
                             compteurUpdateDoc= 0;
                         }
                     }
                 }
-                /*try {
-                    TimeUnit.SECONDS.sleep(5);
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }*/
-                //16th-Final OK
+                // Prédiction des joueurs participants à la phase 16th-Final -> Gagnants de la phase de Pre-Final
                 for (int i = 0; i < 16; i++) {
-                    Document player1Event= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", firstPreFinalPhase));
+                    Document player1Event= crudManager.searchOneElement("Calendrier_Phases_Finales_FL", new Document("_id", firstPreFinalPhase));
                     int idJ1= rand.nextInt(3);
                     int idJ2= rand.nextInt(3);
                     for (Document playerDoc : (ArrayList<Document>)player1Event.get("Joueurs")) {
@@ -261,7 +251,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                     }
                     compteurUpdateDoc= 0;
                     firstPreFinalPhase++;
-                    Document player2Event= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", firstPreFinalPhase));
+                    Document player2Event= crudManager.searchOneElement("Calendrier_Phases_Finales_FL", new Document("_id", firstPreFinalPhase));
                     for (Document playerDoc : (ArrayList<Document>)player2Event.get("Joueurs")) {
                         if (compteurUpdateDoc == idJ2) {
                             idList.add((Integer) playerDoc.get("id_joueur"));
@@ -269,7 +259,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                         compteurUpdateDoc++;
                     }
                     compteurUpdateDoc= 0;
-                    crudManager.updateDocument("Calendrier_Phases_Finales", new Document("_id", firstFinalPhase), new Document("Joueurs", Arrays.asList(new Document("id_joueur", idList.get(0)), new Document("id_joueur", idList.get(1)))));
+                    crudManager.updateDocument("Calendrier_Phases_Finales_FL", new Document("_id", firstFinalPhase), new Document("Joueurs", Arrays.asList(new Document("id_joueur", idList.get(0)), new Document("id_joueur", idList.get(1)))));
                     for (Integer idFinalist : idList) {
                         Document player= crudManager.searchOneElement("Joueurs_FL", new Document("_id", idFinalist));
                         if (player != null) {
@@ -281,10 +271,10 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                     firstPreFinalPhase++;
                     
                 }
-                //8th-Final OK
+                // Prédiction des joueurs participants à la phase 8th-Final -> Gagnants de la phase 16th-Final
                 firstFinalPhase= 20132;
                 for (int i = 0; i < 8; i++) {
-                    Document player1Event= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", firstFinalPhase));
+                    Document player1Event= crudManager.searchOneElement("Calendrier_Phases_Finales_FL", new Document("_id", firstFinalPhase));
                     int idJ1= rand.nextInt(2);
                     int idJ2= rand.nextInt(2);
                     for (Document playerDoc : (ArrayList<Document>)player1Event.get("Joueurs")) {
@@ -295,7 +285,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                     }
                     compteurUpdateDoc= 0;
                     firstFinalPhase++;
-                    Document player2Event= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", firstFinalPhase));
+                    Document player2Event= crudManager.searchOneElement("Calendrier_Phases_Finales_FL", new Document("_id", firstFinalPhase));
                     for (Document playerDoc : (ArrayList<Document>)player2Event.get("Joueurs")) {
                         if (compteurUpdateDoc == idJ2) {
                             idList.add((Integer) playerDoc.get("id_joueur"));
@@ -303,7 +293,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                         compteurUpdateDoc++;
                     }
                     compteurUpdateDoc= 0;
-                    crudManager.updateDocument("Calendrier_Phases_Finales", new Document("_id", firstEigthPhase), new Document("Joueurs", Arrays.asList(new Document("id_joueur", idList.get(0)), new Document("id_joueur", idList.get(1)))));
+                    crudManager.updateDocument("Calendrier_Phases_Finales_FL", new Document("_id", firstEigthPhase), new Document("Joueurs", Arrays.asList(new Document("id_joueur", idList.get(0)), new Document("id_joueur", idList.get(1)))));
                     for (Integer idFinalist : idList) {
                         Document player= crudManager.searchOneElement("Joueurs_FL", new Document("_id", idFinalist));
                         if (player != null) {
@@ -315,10 +305,10 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                     firstFinalPhase++;
                     
                 }
-                //Quarter-Final OK
+                // Prédiction des joueurs participants à la phase Quarter-Final -> Gagnants de la phase 8th-Final
                 firstEigthPhase= 20148;
                 for (int i = 0; i < 4; i++) {
-                    Document player1Event= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", firstEigthPhase));
+                    Document player1Event= crudManager.searchOneElement("Calendrier_Phases_Finales_FL", new Document("_id", firstEigthPhase));
                     int idJ1= rand.nextInt(2);
                     int idJ2= rand.nextInt(2);
                     for (Document playerDoc : (ArrayList<Document>)player1Event.get("Joueurs")) {
@@ -329,7 +319,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                     }
                     compteurUpdateDoc= 0;
                     firstEigthPhase++;
-                    Document player2Event= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", firstEigthPhase));
+                    Document player2Event= crudManager.searchOneElement("Calendrier_Phases_Finales_FL", new Document("_id", firstEigthPhase));
                     for (Document playerDoc : (ArrayList<Document>)player2Event.get("Joueurs")) {
                         if (compteurUpdateDoc == idJ2) {
                             idList.add((Integer) playerDoc.get("id_joueur"));
@@ -337,7 +327,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                         compteurUpdateDoc++;
                     }
                     compteurUpdateDoc= 0;
-                    crudManager.updateDocument("Calendrier_Phases_Finales", new Document("_id", firstQuarterPhase), new Document("Joueurs", Arrays.asList(new Document("id_joueur", idList.get(0)), new Document("id_joueur", idList.get(1)))));
+                    crudManager.updateDocument("Calendrier_Phases_Finales_FL", new Document("_id", firstQuarterPhase), new Document("Joueurs", Arrays.asList(new Document("id_joueur", idList.get(0)), new Document("id_joueur", idList.get(1)))));
                     for (Integer idFinalist : idList) {
                         Document player= crudManager.searchOneElement("Joueurs_FL", new Document("_id", idFinalist));
                         if (player != null) {
@@ -349,10 +339,10 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                     firstQuarterPhase++;
                     
                 }
-                //Semi-Final OK
+                // Prédiction des joueurs participants à la phase Semi-Final -> Gagnants de la phase Quarter-Final
                 firstQuarterPhase= 20156;
                 for (int i = 0; i < 2; i++) {
-                    Document player1Event= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", firstQuarterPhase));
+                    Document player1Event= crudManager.searchOneElement("Calendrier_Phases_Finales_FL", new Document("_id", firstQuarterPhase));
                     int idJ1= rand.nextInt(2);
                     int idJ2= rand.nextInt(2);
                     for (Document playerDoc : (ArrayList<Document>)player1Event.get("Joueurs")) {
@@ -363,7 +353,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                     }
                     compteurUpdateDoc= 0;
                     firstQuarterPhase++;
-                    Document player2Event= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", firstQuarterPhase));
+                    Document player2Event= crudManager.searchOneElement("Calendrier_Phases_Finales_FL", new Document("_id", firstQuarterPhase));
                     for (Document playerDoc : (ArrayList<Document>)player2Event.get("Joueurs")) {
                         if (compteurUpdateDoc == idJ2) {
                             idList.add((Integer) playerDoc.get("id_joueur"));
@@ -371,7 +361,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                         compteurUpdateDoc++;
                     }
                     compteurUpdateDoc= 0;
-                    crudManager.updateDocument("Calendrier_Phases_Finales", new Document("_id", firstSemiPhase), new Document("Joueurs", Arrays.asList(new Document("id_joueur", idList.get(0)), new Document("id_joueur", idList.get(1)))));
+                    crudManager.updateDocument("Calendrier_Phases_Finales_FL", new Document("_id", firstSemiPhase), new Document("Joueurs", Arrays.asList(new Document("id_joueur", idList.get(0)), new Document("id_joueur", idList.get(1)))));
                     for (Integer idFinalist : idList) {
                         Document player= crudManager.searchOneElement("Joueurs_FL", new Document("_id", idFinalist));
                         if (player != null) {
@@ -383,9 +373,9 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                     firstQuarterPhase++;
                     
                 }
-                //Final OK
+                // Prédiction des joueurs participants au match Final -> Gagnants de la phase de Semi-Final
                 firstSemiPhase= 20160;
-                Document player1Event= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", firstSemiPhase));
+                Document player1Event= crudManager.searchOneElement("Calendrier_Phases_Finales_FL", new Document("_id", firstSemiPhase));
                 int idJ1= rand.nextInt(2);
                 int idJ2= rand.nextInt(2);
                 for (Document playerDoc : (ArrayList<Document>)player1Event.get("Joueurs")) {
@@ -396,7 +386,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                 }
                 compteurUpdateDoc= 0;
                 firstSemiPhase++;
-                Document player2Event= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", firstSemiPhase));
+                Document player2Event= crudManager.searchOneElement("Calendrier_Phases_Finales_FL", new Document("_id", firstSemiPhase));
                 for (Document playerDoc : (ArrayList<Document>)player2Event.get("Joueurs")) {
                     if (compteurUpdateDoc == idJ2) {
                         idList.add((Integer) playerDoc.get("id_joueur"));
@@ -404,7 +394,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                     compteurUpdateDoc++;
                 }
                 compteurUpdateDoc= 0;
-                crudManager.updateDocument("Calendrier_Phases_Finales", new Document("_id", Final), new Document("Joueurs", Arrays.asList(new Document("id_joueur", idList.get(0)), new Document("id_joueur", idList.get(1)))));
+                crudManager.updateDocument("Calendrier_Phases_Finales_FL", new Document("_id", Final), new Document("Joueurs", Arrays.asList(new Document("id_joueur", idList.get(0)), new Document("id_joueur", idList.get(1)))));
                 for (Integer idFinalist : idList) {
                     Document player= crudManager.searchOneElement("Joueurs_FL", new Document("_id", idFinalist));
                     if (player != null) {
@@ -412,9 +402,9 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                     }
                 }
                 idList.removeAll(idList);
-                    
-                //Winner OK
-                Document finalEvent= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", Final));    
+                // Simulation du match Final
+                //Pour prédir le Vainqueur du Tournoi -> Gagnants du match Final
+                Document finalEvent= crudManager.searchOneElement("Calendrier_Phases_Finales_FL", new Document("_id", Final));    
                 int player1Index= rand.nextInt(2);
                 int player1Id= 0, player2Id= 0;
                 for (Document playerDoc : (ArrayList<Document>)finalEvent.get("Joueurs")) {
@@ -429,14 +419,14 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                 while (isPongStarted == false) {
                     winnerLabel.setText("Appuyer sur Start Pong pour simuler la finale");
                 }
-                Thread pongThread= new Thread() {
+                Thread pongThread= new Thread() {   //Appui sur le bouton Start Pong, lancement du jeu Pong
                     public void run() {
                         playPong();
                     }
                 };
                 pongThread.start();
                 try {
-                    pongThread.join();
+                    pongThread.join();              //Attente de la fin du jeu Pong pour update les résultats sur l'IHM
                 } catch (InterruptedException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -458,27 +448,27 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
             }
         }
     }
-
+    // --> Méthode pour les Listener des objets graphiques
     @Override
     public void actionPerformed(ActionEvent e) {
         // TODO Auto-generated method stub
         Object buttonPressed= e.getSource();
-        if (buttonPressed == finalButton) {
-            updateColGUI("Calendrier_Phases_Finales", mainPanel);
+        if (buttonPressed == finalButton) {                                 //Affichage du Calendrier des phases finales    
+            updateColGUI("Calendrier_Phases_Finales_FL", mainPanel);
             finalButton.setEnabled(false);
             groupButton.setEnabled(true);
-        } if (buttonPressed == groupButton) {
+        } if (buttonPressed == groupButton) {                            //Affichage du Calendrier des phases de groupe
             updateColGUI("Calendrier_Phases_Groupes", mainPanel);
             groupButton.setEnabled(false);
             finalButton.setEnabled(true);
-        } else if (buttonPressed == startPongButton) {
+        } else if (buttonPressed == startPongButton) {                  //Indication que la simulation du match Final peut commencer
             isPongStarted= true;
-        } else if (buttonPressed == betButton) {
+        } else if (buttonPressed == betButton) {                        //Affichage de la fenêtre de parie sur un joueur || OBLIGATOIRE POUR LANCER LA SIMULATION DU TOURNOI
             updateColGUI("Joueurs_FL", betPanel);
             betFrame.setVisible(true);
-        } else if (buttonPressed == cancelBetButton) {
+        } else if (buttonPressed == cancelBetButton) {                  //Retour à la fenêtre principale du mode Fantasy League
             betFrame.setVisible(false);
-        } else if (buttonPressed == validBetButton) {
+        } else if (buttonPressed == validBetButton) {                   //Validation du parie sur un joueur -> Lancement des prédictions, simulation du tournoi
             Boolean isBetPlayer= true;
             int rowSelected= betTable.getSelectedRow();
             betId= Integer.valueOf((String) betTable.getValueAt(rowSelected, 0));
@@ -498,6 +488,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
         } 
     }
 
+    //Partie Test de la simulation du tournoi (Indépendament de l'IHM de Base du Mode Classique)
     public static void main(String[] args) {
         FantasyLeagueFrame frameTest= new FantasyLeagueFrame();
         new Thread() {
@@ -532,9 +523,9 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                 //Pre-Final OK
                 for (int i = 0; i < 96; i++) {
                     compteurUpdateDoc++;;
-                    int idFinalist= 10001 + rand.nextInt(961);
+                    int idFinalist= 11001 + rand.nextInt(961);
                     while (prevId == idFinalist) {
-                        idFinalist= 10001 + rand.nextInt(961);
+                        idFinalist= 11001 + rand.nextInt(961);
                         
                     }
                     prevId= idFinalist;
@@ -545,7 +536,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                     if (player != null) {
                         crudManager.updateDocument("Joueurs_FL", new Document("_id", idFinalist), new Document("tournament_phase", "Pre-final"));    
                         if (compteurUpdateDoc >= 3) {
-                            crudManager.updateDocument("Calendrier_Phases_Finales", new Document("_id", firstGeneralPhase), new Document("Joueurs", Arrays.asList(new Document("id_joueur", idList.get(0)), new Document("id_joueur", idList.get(1)), new Document("id_joueur", idList.get(2)))));
+                            crudManager.updateDocument("Calendrier_Phases_Finales_FL", new Document("_id", firstGeneralPhase), new Document("Joueurs", Arrays.asList(new Document("id_joueur", idList.get(0)), new Document("id_joueur", idList.get(1)), new Document("id_joueur", idList.get(2)))));
                             idList.removeAll(idList);
                             firstGeneralPhase++;
                             compteurUpdateDoc= 0;
@@ -560,7 +551,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                 }*/
                 //16th-Final OK
                 for (int i = 0; i < 16; i++) {
-                    Document player1Event= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", firstPreFinalPhase));
+                    Document player1Event= crudManager.searchOneElement("Calendrier_Phases_Finales_FL", new Document("_id", firstPreFinalPhase));
                     int idJ1= rand.nextInt(3);
                     int idJ2= rand.nextInt(3);
                     for (Document playerDoc : (ArrayList<Document>)player1Event.get("Joueurs")) {
@@ -571,7 +562,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                     }
                     compteurUpdateDoc= 0;
                     firstPreFinalPhase++;
-                    Document player2Event= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", firstPreFinalPhase));
+                    Document player2Event= crudManager.searchOneElement("Calendrier_Phases_Finales_FL", new Document("_id", firstPreFinalPhase));
                     for (Document playerDoc : (ArrayList<Document>)player2Event.get("Joueurs")) {
                         if (compteurUpdateDoc == idJ2) {
                             idList.add((Integer) playerDoc.get("id_joueur"));
@@ -579,7 +570,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                         compteurUpdateDoc++;
                     }
                     compteurUpdateDoc= 0;
-                    crudManager.updateDocument("Calendrier_Phases_Finales", new Document("_id", firstFinalPhase), new Document("Joueurs", Arrays.asList(new Document("id_joueur", idList.get(0)), new Document("id_joueur", idList.get(1)))));
+                    crudManager.updateDocument("Calendrier_Phases_Finales_FL", new Document("_id", firstFinalPhase), new Document("Joueurs", Arrays.asList(new Document("id_joueur", idList.get(0)), new Document("id_joueur", idList.get(1)))));
                     for (Integer idFinalist : idList) {
                         Document player= crudManager.searchOneElement("Joueurs_FL", new Document("_id", idFinalist));
                         if (player != null) {
@@ -594,7 +585,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                 //8th-Final OK
                 firstFinalPhase= 20132;
                 for (int i = 0; i < 8; i++) {
-                    Document player1Event= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", firstFinalPhase));
+                    Document player1Event= crudManager.searchOneElement("Calendrier_Phases_Finales_FL", new Document("_id", firstFinalPhase));
                     int idJ1= rand.nextInt(2);
                     int idJ2= rand.nextInt(2);
                     for (Document playerDoc : (ArrayList<Document>)player1Event.get("Joueurs")) {
@@ -605,7 +596,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                     }
                     compteurUpdateDoc= 0;
                     firstFinalPhase++;
-                    Document player2Event= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", firstFinalPhase));
+                    Document player2Event= crudManager.searchOneElement("Calendrier_Phases_Finales_FL", new Document("_id", firstFinalPhase));
                     for (Document playerDoc : (ArrayList<Document>)player2Event.get("Joueurs")) {
                         if (compteurUpdateDoc == idJ2) {
                             idList.add((Integer) playerDoc.get("id_joueur"));
@@ -613,7 +604,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                         compteurUpdateDoc++;
                     }
                     compteurUpdateDoc= 0;
-                    crudManager.updateDocument("Calendrier_Phases_Finales", new Document("_id", firstEigthPhase), new Document("Joueurs", Arrays.asList(new Document("id_joueur", idList.get(0)), new Document("id_joueur", idList.get(1)))));
+                    crudManager.updateDocument("Calendrier_Phases_Finales_FL", new Document("_id", firstEigthPhase), new Document("Joueurs", Arrays.asList(new Document("id_joueur", idList.get(0)), new Document("id_joueur", idList.get(1)))));
                     for (Integer idFinalist : idList) {
                         Document player= crudManager.searchOneElement("Joueurs_FL", new Document("_id", idFinalist));
                         if (player != null) {
@@ -628,7 +619,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                 //Quarter-Final OK
                 firstEigthPhase= 20148;
                 for (int i = 0; i < 4; i++) {
-                    Document player1Event= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", firstEigthPhase));
+                    Document player1Event= crudManager.searchOneElement("Calendrier_Phases_Finales_FL", new Document("_id", firstEigthPhase));
                     int idJ1= rand.nextInt(2);
                     int idJ2= rand.nextInt(2);
                     for (Document playerDoc : (ArrayList<Document>)player1Event.get("Joueurs")) {
@@ -639,7 +630,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                     }
                     compteurUpdateDoc= 0;
                     firstEigthPhase++;
-                    Document player2Event= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", firstEigthPhase));
+                    Document player2Event= crudManager.searchOneElement("Calendrier_Phases_Finales_FL", new Document("_id", firstEigthPhase));
                     for (Document playerDoc : (ArrayList<Document>)player2Event.get("Joueurs")) {
                         if (compteurUpdateDoc == idJ2) {
                             idList.add((Integer) playerDoc.get("id_joueur"));
@@ -647,7 +638,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                         compteurUpdateDoc++;
                     }
                     compteurUpdateDoc= 0;
-                    crudManager.updateDocument("Calendrier_Phases_Finales", new Document("_id", firstQuarterPhase), new Document("Joueurs", Arrays.asList(new Document("id_joueur", idList.get(0)), new Document("id_joueur", idList.get(1)))));
+                    crudManager.updateDocument("Calendrier_Phases_Finales_FL", new Document("_id", firstQuarterPhase), new Document("Joueurs", Arrays.asList(new Document("id_joueur", idList.get(0)), new Document("id_joueur", idList.get(1)))));
                     for (Integer idFinalist : idList) {
                         Document player= crudManager.searchOneElement("Joueurs_FL", new Document("_id", idFinalist));
                         if (player != null) {
@@ -662,7 +653,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                 //Semi-Final OK
                 firstQuarterPhase= 20156;
                 for (int i = 0; i < 2; i++) {
-                    Document player1Event= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", firstQuarterPhase));
+                    Document player1Event= crudManager.searchOneElement("Calendrier_Phases_Finales_FL", new Document("_id", firstQuarterPhase));
                     int idJ1= rand.nextInt(2);
                     int idJ2= rand.nextInt(2);
                     for (Document playerDoc : (ArrayList<Document>)player1Event.get("Joueurs")) {
@@ -673,7 +664,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                     }
                     compteurUpdateDoc= 0;
                     firstQuarterPhase++;
-                    Document player2Event= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", firstQuarterPhase));
+                    Document player2Event= crudManager.searchOneElement("Calendrier_Phases_Finales_FL", new Document("_id", firstQuarterPhase));
                     for (Document playerDoc : (ArrayList<Document>)player2Event.get("Joueurs")) {
                         if (compteurUpdateDoc == idJ2) {
                             idList.add((Integer) playerDoc.get("id_joueur"));
@@ -681,7 +672,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                         compteurUpdateDoc++;
                     }
                     compteurUpdateDoc= 0;
-                    crudManager.updateDocument("Calendrier_Phases_Finales", new Document("_id", firstSemiPhase), new Document("Joueurs", Arrays.asList(new Document("id_joueur", idList.get(0)), new Document("id_joueur", idList.get(1)))));
+                    crudManager.updateDocument("Calendrier_Phases_Finales_FL", new Document("_id", firstSemiPhase), new Document("Joueurs", Arrays.asList(new Document("id_joueur", idList.get(0)), new Document("id_joueur", idList.get(1)))));
                     for (Integer idFinalist : idList) {
                         Document player= crudManager.searchOneElement("Joueurs_FL", new Document("_id", idFinalist));
                         if (player != null) {
@@ -695,7 +686,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                 }
                 //Final OK
                 firstSemiPhase= 20160;
-                Document player1Event= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", firstSemiPhase));
+                Document player1Event= crudManager.searchOneElement("Calendrier_Phases_Finales_FL", new Document("_id", firstSemiPhase));
                 int idJ1= rand.nextInt(2);
                 int idJ2= rand.nextInt(2);
                 for (Document playerDoc : (ArrayList<Document>)player1Event.get("Joueurs")) {
@@ -706,7 +697,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                 }
                 compteurUpdateDoc= 0;
                 firstSemiPhase++;
-                Document player2Event= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", firstSemiPhase));
+                Document player2Event= crudManager.searchOneElement("Calendrier_Phases_Finales_FL", new Document("_id", firstSemiPhase));
                 for (Document playerDoc : (ArrayList<Document>)player2Event.get("Joueurs")) {
                     if (compteurUpdateDoc == idJ2) {
                         idList.add((Integer) playerDoc.get("id_joueur"));
@@ -714,7 +705,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                     compteurUpdateDoc++;
                 }
                 compteurUpdateDoc= 0;
-                crudManager.updateDocument("Calendrier_Phases_Finales", new Document("_id", Final), new Document("Joueurs", Arrays.asList(new Document("id_joueur", idList.get(0)), new Document("id_joueur", idList.get(1)))));
+                crudManager.updateDocument("Calendrier_Phases_Finales_FL", new Document("_id", Final), new Document("Joueurs", Arrays.asList(new Document("id_joueur", idList.get(0)), new Document("id_joueur", idList.get(1)))));
                 for (Integer idFinalist : idList) {
                     Document player= crudManager.searchOneElement("Joueurs_FL", new Document("_id", idFinalist));
                     if (player != null) {
@@ -724,7 +715,7 @@ public class FantasyLeagueFrame extends JFrame implements ActionListener{
                 idList.removeAll(idList);
                     
                 //Winner OK
-                Document finalEvent= crudManager.searchOneElement("Calendrier_Phases_Finales", new Document("_id", Final));    
+                Document finalEvent= crudManager.searchOneElement("Calendrier_Phases_Finales_FL", new Document("_id", Final));    
                 int player1Index= rand.nextInt(2);
                 int player1Id= 0, player2Id= 0;
                 for (Document playerDoc : (ArrayList<Document>)finalEvent.get("Joueurs")) {

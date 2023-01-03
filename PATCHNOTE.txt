@@ -24,3 +24,17 @@ PROJET_TOURNOI_TENNIS_V1
 
 
 -----------------------------------------------------------------------------------
+PROJET_TOURNOI_TENNIS_V2
+.Fonctionnalités Ajoutées
+-> Modification de la requête du GroupBy pour supporter l'utilisation de 2 champs dans la même requête
+-> Modification des Collections pour correspondre à l'esprit MongoDB (précédemment, les collections étaient trop proches de Tables Relationnelles)
+-> Ajout de commentaires au Code
+-> Modification des Méthodes du CRUD pour supporter le problème des ID String pour les éléments ajoutés (Problèmes du à l'utilisation des champs de saisie)
+-> Implémentation de l'ajout de Clés supplémentaires à une Document 
+
+.Fonctionnalités à Développer
+-> Intégration d'une IA de génération d'image pour les collections Joueurs / Arbitres et Staff via Package DJL
+        (Possible si une solution est trouvée au problème de rapidité de récupération des images générées par l'IA)
+
+
+-----------------------------------------------------------------------------------

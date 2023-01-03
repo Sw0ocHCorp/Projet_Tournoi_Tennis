@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+//--> CLASSE: Moteur du Jeu Pong
 public class PongEngine extends JComponent {
     private Image imgBackground;
     private Player player1, player2;
@@ -24,7 +25,7 @@ public class PongEngine extends JComponent {
     public PongEngine() {
         
     }
-    
+    // --> Méthode d'initialisation de l'environnement de jeu
     public void initEnv(Image imageSource) {
         this.imgBackground= imageSource;
         this.player1 = new Player(imageSource, this);
@@ -33,7 +34,7 @@ public class PongEngine extends JComponent {
         this.player2.setPlayerNumber(2);
         this.ball = new Ball(imageSource);
     }
-
+    // --> Méthode de mise à jour de la position des joueurs et la balle dans le jeu (appelée avec ligne de code ==> this.repaint();)
     @Override
     protected void paintComponent(Graphics g) {
         // TODO Auto-generated method stub
@@ -47,31 +48,35 @@ public class PongEngine extends JComponent {
         this.player1.updateLocation();
         this.player2.updateLocation();
     }
-
+    // --> récupération de la position sur l'axe X de la balle
     public int getBallXLocation() {
         return ball.prevXLocation;
     }
+    // --> récupération de la position sur l'axe Y de la balle
     public int getBallYLocation() {
         return ball.prevYLocation;
     }
+    // --> récupération de la position sur l'axe X du joueur 1
     public int getPlayer1XLocation() {
         return player1.getLocation();
     }
+    // --> récupération de la position sur l'axe X du joueur 2
     public int getPlayer2XLocation() {
         return player2.getLocation();
     }
+    // --> récupération de la direction de la balle
     public String getBallDirection() {
         return ball.getDirection();
     }
-
+    // --> récupération de la largeur du joueur
     public int getPlayerWidth() {
         return player1.getWidth();
     }
-
+    // --> récupération des caractéristiques de la balle
     public ArrayList<Integer> getBallCaracteristics() {
         return ball.getBallCaracteristics();
     }
-
+    // --> MAJ du score 
     public void setScore(String player) {
         if (player.equals("J1")) {
             scoreJ1+=0.5;
@@ -80,7 +85,7 @@ public class PongEngine extends JComponent {
         }
         ball.setGoal();
     }
-
+    // --> Méthode appelant une réaction pour un joueur
     public void invokePlayerReaction(String player, String direction) {
         if (player.equals("J1")) {
             player1.reactionToBall(direction);
@@ -88,7 +93,7 @@ public class PongEngine extends JComponent {
             player2.reactionToBall(direction);
         }
     }
-
+    // --> Méthode de vérification de la position de la balle par rapport aux joueurs pour préparer la prochaine Frame de jeu
     public void verifyScore() {
         int ballXLocation = getBallXLocation();
         int player1XLocation = getPlayer1XLocation();
@@ -122,7 +127,7 @@ public class PongEngine extends JComponent {
             }
         }
     }
-
+    // --> Méthode de réaction du joueur
     public void playerReaction() {
         Double[] rightMotionPossible= {0.01, 0.03, 0.05, 0.07, -0.04, -0.06};
         Double[] leftMotionPossible= {-0.01, -0.03, -0.05, -0.07, 0.04, 0.06};
@@ -158,6 +163,7 @@ public class PongEngine extends JComponent {
         }
     }
 
+    // --> Méthode cycle de vie du jeu
     public void playGame() {
         while (scoreJ1 < 3.0 && scoreJ2 < 3.0) {
             verifyScore();
@@ -172,20 +178,24 @@ public class PongEngine extends JComponent {
             //Player Reaction
             playerReaction();
             this.repaint();
+            scoreJ1= Math.ceil(scoreJ1);
+            scoreJ2= Math.ceil(scoreJ2);
             System.out.println("J1 Scored= " + scoreJ1);
             System.out.println("J2 Scored= " + scoreJ2);
             System.out.println("----------------------");
         }
 
     }
-
+    // Récupération du score du joueur 1
     public double getScoreJ1() {
         return scoreJ1;
     }
+    // Récupération du score du joueur 2
     public double getScoreJ2() {
         return scoreJ2;
     }
 
+    // Partie Test du Jeu Pong Indépendamment de l'Interface Graphique du Mode Fantasy League
     public static void main(String[] args) {
         //INITIALISATION DE LA FENETRE / JEU
         JFrame frame = new JFrame();
